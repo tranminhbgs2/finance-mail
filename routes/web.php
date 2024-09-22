@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::get('/fetch-emails', [EmailController::class, 'fetchAndStoreEmails']);
+Route::get('/emails', [EmailController::class, 'getEmails']);

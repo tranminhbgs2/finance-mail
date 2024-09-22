@@ -12,10 +12,13 @@ class Email extends Model
         'subject',
         'from_email',
         'bank',
+        'account_receiver',
         'name_receiver',
         'price',
         'date_success',
         'body',
+        'type',
+        'content_transfer',
         'received_at'
     ];
 }
