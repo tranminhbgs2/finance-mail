@@ -73,19 +73,19 @@ class GmailService
         $details['date'] = $message->getInternalDate();
 
         // Lấy toàn bộ nội dung email
-        $details['body'] = $this->getBody($payload);
+        // $details['body'] = $this->getBody($payload);
         $details['content'] = [];
 
         // Trích xuất nội dung cụ thể từ email HSBC
         switch ($bank) {
             case 'HSBC':
-                $details['content'] = $this->extractContent($details['body']);
+                $details['content'] = $this->extractContent($this->getBody($payload));
                 break;
             case 'VPBANK':
-                $details['content'] = $this->extractContentVpBank($details['body']);
+                $details['content'] = $this->extractContentVpBank($this->getBody($payload));
                 break;
             case 'BIDV':
-                $details['content'] = $this->extractContentBIDV($details['body']);
+                $details['content'] = $this->extractContentBIDV($this->getBody($payload));
                 break;
             default:
                 break;
@@ -232,7 +232,7 @@ class GmailService
                 $res['price'] = (int)$res['price'];
             }
 
-            if ($res['price'] == '') {
+            if ($res['price'] == 0) {
                 // Extract Số tiền ghi có
                 if (strpos($text, 'Số tiền thanh toán:') !== false) {
                     $res['price'] = trim($td->nextSibling->textContent);
@@ -262,7 +262,9 @@ class GmailService
             // Extract Nội dung chuyển tiền
             if (strpos($text, 'Nội dung chuyển tiền:') !== false) {
                 $res['content_transfer'] = trim($td->nextSibling->textContent);
-                $res['type'] = checkType($res['content_transfer']);
+                if ($res['content_transfer']) {
+                    $res['type'] = checkType($res['content_transfer']);
+                }
             }
 
             // Extract Số tiền phí

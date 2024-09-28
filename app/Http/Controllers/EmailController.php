@@ -48,6 +48,21 @@ class EmailController extends Controller
 
         $messages = $this->gmailService->getGmailMessages($query);
 
+        // $em = [];
+        // foreach ($messages as $message) {
+        //     $emailData = $this->gmailService->getMessageDetails($message->getId(), $bank);
+
+
+        //     $receivedAt = Carbon::createFromTimestampMs($emailData['date']);
+        //     // Chuyển đổi sang UTC+7
+        //     $receivedAt->setTimezone('Asia/Bangkok');
+        //     // if(!isset($emailData['date'])) {
+        //         $em[] = $receivedAt->toDateTimeString();
+        //     // }
+
+        // }
+        // return response()->json(['bank' => $em]);
+        // die;
         // Dispatch Job để xử lý email không đồng bộ
         ProcessEmails::dispatch($messages, $bank);
 

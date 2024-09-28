@@ -6,8 +6,7 @@ use App\Events\EmailsStored;
 use App\Models\Email;
 use App\Services\GmailService;
 use Carbon\Carbon;
-use DateTime;
-use DateTimeZone;
+use Illuminate\Bus\Queueable as BusQueueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -17,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 
 class ProcessEmails implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, BusQueueable, SerializesModels;
 
     protected $messages;
     protected $bank;
@@ -34,6 +33,7 @@ class ProcessEmails implements ShouldQueue
         foreach ($this->messages as $message) {
             $emailData = app(GmailService::class)->getMessageDetails($message->getId(), $this->bank);
 
+            Log::info('Email data', $emailData);
             $receivedAt = Carbon::createFromTimestampMs($emailData['date']);
             // Chuyển đổi sang UTC+7
             $receivedAt->setTimezone('Asia/Bangkok');
