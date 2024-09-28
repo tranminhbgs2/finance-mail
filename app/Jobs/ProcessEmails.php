@@ -33,7 +33,6 @@ class ProcessEmails implements ShouldQueue
         foreach ($this->messages as $message) {
             $emailData = app(GmailService::class)->getMessageDetails($message->getId(), $this->bank);
 
-            Log::info('Email data', $emailData);
             $receivedAt = Carbon::createFromTimestampMs($emailData['date']);
             // Chuyển đổi sang UTC+7
             $receivedAt->setTimezone('Asia/Bangkok');
