@@ -15,6 +15,7 @@ class Email extends Model
         'account_receiver',
         'name_receiver',
         'price',
+        'fee_amount',
         'date_success',
         'body',
         'type',

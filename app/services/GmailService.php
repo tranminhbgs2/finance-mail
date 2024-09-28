@@ -137,12 +137,12 @@ class GmailService
     {
 
         $res = [
-            'date_success' => '',
-            'price' => '',
-            'account_receiver' => '',
-            'name_receiver' => '',
-            'content_transfer' => '',
-            'fee_amount' => '',
+            'date_success' => null,
+            'price' => 0,
+            'account_receiver' => null,
+            'name_receiver' => null,
+            'content_transfer' => null,
+            'fee_amount' => 0,
             'type' => 'ORTHER'
         ];
         $dom = new DOMDocument();
@@ -187,6 +187,7 @@ class GmailService
                 if (!empty($matches_unit)) {
                     $res['name_receiver'] = $matches_unit[1];
                     $res['content_transfer'] = checkType('mua sam');
+                    $res['type'] = checkType('mua sam');
                 }
             }
         }
@@ -197,12 +198,12 @@ class GmailService
     function extractContentVpBank($html)
     {
         $res = [
-            'date_success' => '',
-            'price' => '',
-            'account_receiver' => '',
-            'name_receiver' => '',
-            'content_transfer' => '',
-            'fee_amount' => '',
+            'date_success' => null,
+            'price' => 0,
+            'account_receiver' => null,
+            'name_receiver' => null,
+            'content_transfer' => null,
+            'fee_amount' => 0,
             'type' => 'ORTHER'
         ];
 
@@ -279,12 +280,12 @@ class GmailService
     function extractContentBIDV($html)
     {
         $res = [
-            'date_success' => '',
-            'price' => '',
-            'account_receiver' => '',
-            'name_receiver' => '',
-            'content_transfer' => '',
-            'fee_amount' => '',
+            'date_success' => null,
+            'price' => 0,
+            'account_receiver' => null,
+            'name_receiver' => null,
+            'content_transfer' => null,
+            'fee_amount' => 0,
             'type' => 'ORTHER'
         ];
 
@@ -347,11 +348,23 @@ class GmailService
             //   }
 
             $data['transaction_time'] = str_replace('/', '-', $data['transaction_time']);
+            if(isset($data['amount'])){
+                $data['transaction_amount'] = $data['amount'];
+            }
+            if(!isset($data['transaction_fee'])){
+                $data['transaction_fee'] = 0;
+            }
+            if(isset($data['order_number'])){
+                $data['transaction_remark'] = $data['order_number'];
+            }
+            if(isset($data['merchant_name'])){
+                $data['beneficiary_name'] = $data['merchant_name'];
+            }
             $res = [
                 'date_success' => date('Y-m-d H:i:s', strtotime($data['transaction_time'])),
-                'price' => str_replace(',', '', $data['transaction_amount']),
-                'account_receiver' => $data['beneficiary_account_card_number'],
-                'name_receiver' => $data['beneficiary_name'],
+                'price' => trim(str_replace(',', '', $data['transaction_amount'])),
+                'account_receiver' => isset($data['beneficiary_account_card_number']) ? $data['beneficiary_account_card_number'] : null,
+                'name_receiver' => ($data['beneficiary_name']) ? $data['beneficiary_name'] : null,
                 'content_transfer' => $data['transaction_remark'],
                 'fee_amount' => str_replace(',', '', $data['transaction_fee']),
                 'type' => checkType($data['transaction_remark'])
@@ -362,7 +375,7 @@ class GmailService
             $res['fee_amount'] = str_replace(' VND', '', $res['fee_amount']);
             $res['fee_amount'] = (int)$res['fee_amount'];
             // Dữ liệu trích xuất
-            return ['count' => 1, 'table_html' => $res]; // Trả về bảng tìm thấy
+            return $res; // Trả về bảng tìm thấy
         } else {
             return ['error' => 'Không tìm thấy bảng phù hợp.']; // Thông báo lỗi
         }
