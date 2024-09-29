@@ -29,6 +29,7 @@ class ProcessEmails implements ShouldQueue
 
     public function handle()
     {
+        Log::info('Job is being processed...');
         $bulkInsertData = [];
         foreach ($this->messages as $message) {
             $emailData = app(GmailService::class)->getMessageDetails($message->getId(), $this->bank);
