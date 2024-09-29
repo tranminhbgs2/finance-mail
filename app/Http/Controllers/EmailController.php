@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessEmails;
 use App\Models\Email;
+use App\Models\FailedJob;
 use App\Services\GmailService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class EmailController extends Controller
 
     public function fetchAndStoreEmails(Request $request)
     {
+        FailedJob::truncate(); // xóa các job thất bại trước khi chạy cái mới
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $bank = strtoupper($request->input('bank') ?? 'BIDV');
