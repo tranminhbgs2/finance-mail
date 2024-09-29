@@ -8,6 +8,7 @@ use Google\Service\Gmail as Google_Service_Gmail;
 use Google_Client;
 use Symfony\Component\DomCrawler\Crawler;
 
+//Dịch vụ Gmail
 class GmailService
 {
     protected $client;
